@@ -2,6 +2,7 @@ package com.spring.jwt.HoroscopeDetails;
 
 
 import com.spring.jwt.utils.ApiResponse;
+import com.spring.jwt.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.*;
 public class HoroscopeDetailsController {
 
     private final HoroscopeDetailsService horoscopeDetailsService;
+    private final JwtUtils jwtUtils;
 
     @Operation(summary = "Api for profile creation")
     @PatchMapping("/saveHoroscope")
     public ResponseEntity<ApiResponse<HoroscopeDTO>> saveHoroscope(
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody HoroscopeDTO horoscopeDTO) {
         try {
+            Integer userId= jwtUtils.extractUSerID(authHeader);
             horoscopeDetailsService.saveHoroscopeDetails(horoscopeDTO);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.success("Horoscope details saved successfully"));

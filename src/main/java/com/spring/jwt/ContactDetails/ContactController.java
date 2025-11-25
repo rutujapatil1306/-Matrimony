@@ -4,6 +4,7 @@ import com.spring.jwt.entity.ContactDetails;
 import com.spring.jwt.utils.ApiResponse;
 import com.spring.jwt.utils.BaseResponseDTO;
 import com.spring.jwt.utils.ErrorResponseDto;
+import com.spring.jwt.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,10 +23,13 @@ import java.util.List;
 public class ContactController {
 
     private final ContactService contactService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponseDTO> createContact(@RequestBody ContactDTO contactDTO) {
-
+    public ResponseEntity<BaseResponseDTO> createContact(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody ContactDTO contactDTO) {
+        Integer userId= jwtUtils.extractUSerID(authHeader);
         BaseResponseDTO response = contactService.create(contactDTO);
 
         return ResponseEntity
