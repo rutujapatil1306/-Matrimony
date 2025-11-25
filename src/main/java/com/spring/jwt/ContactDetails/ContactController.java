@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.query.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/contact")
+@RequiredArgsConstructor
 public class ContactController {
 
     private final ContactService contactService;
-
-    public ContactController(ContactService contactService){
-        this.contactService = contactService;
-    }
-
 
     @PostMapping("/create")
     public ResponseEntity<BaseResponseDTO> createContact(@RequestBody ContactDTO contactDTO) {

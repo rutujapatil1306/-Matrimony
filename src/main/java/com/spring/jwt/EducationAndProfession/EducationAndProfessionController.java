@@ -22,9 +22,7 @@ public class EducationAndProfessionController {
 
     @PostMapping("/create")
     public ResponseEntity<BaseResponseDTO> create(@RequestBody EducationDTO educationDTO) {
-
         BaseResponseDTO response = educationAndProfessionService.create(educationDTO);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
@@ -34,7 +32,6 @@ public class EducationAndProfessionController {
     public ResponseEntity<ApiResponse<EducationAndProfession>> create(@RequestParam Integer userID,
                                                                       @RequestBody EducationDTO educationDTO){
         ApiResponse response = educationAndProfessionService.save(userID,educationDTO);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

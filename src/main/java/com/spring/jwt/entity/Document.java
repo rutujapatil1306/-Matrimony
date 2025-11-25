@@ -22,12 +22,12 @@ public class Document {
     private Integer documentId;
 
   //  @Column(length = 45, nullable = false)
-    private String documentType;
+    private String documentName;
 
    // @NotNull(message = "document data cannot be empty")
     @Lob
    // @Column(name = "document_data", nullable = false)
-    private byte[] documentData;
+    private byte[] documentFile;
 
     @OneToOne
     @JoinColumn(name = "user_id")
