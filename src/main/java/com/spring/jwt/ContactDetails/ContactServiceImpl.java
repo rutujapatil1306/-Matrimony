@@ -3,13 +3,22 @@ package com.spring.jwt.ContactDetails;
 import com.spring.jwt.CompleteProfile.CompleteProfileRepository;
 import com.spring.jwt.entity.CompleteProfile;
 import com.spring.jwt.entity.ContactDetails;
+import com.spring.jwt.entity.User;
+import com.spring.jwt.entity.UserProfile;
 import com.spring.jwt.exception.ContactNotFoundException;
+import com.spring.jwt.exception.UserAlreadyExistException;
 import com.spring.jwt.exception.UserNotFoundExceptions;
+import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.ApiResponse;
 import com.spring.jwt.utils.BaseResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ContactServiceImpl implements ContactService {
 
 
@@ -17,39 +26,20 @@ public class ContactServiceImpl implements ContactService {
 
     private final CompleteProfileRepository completeProfileRepository;
 
-    public ContactServiceImpl(ContactRepository contactRepository, CompleteProfileRepository completeProfileRepository){
-        this.contactRepository = contactRepository;
-        this.completeProfileRepository = completeProfileRepository;
-    }
-
+    private final UserRepository userRepository;
 
     @Override
-    public ApiResponse updateByUserID(Integer userID, ContactDTO contactDTO) {
+    public BaseResponseDTO create(Integer userId,ContactDTO contactDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
-        ContactDetails existingContact = contactRepository.findByUserId(userID)
-                .orElseThrow(() -> new UserNotFoundExceptions(
-                        "No contact details found for userID: " + userID +
-                                ". Please register first."
-                ));
-
-        updateContact(existingContact, contactDTO);
-
-        ContactDetails savedContact = contactRepository.save(existingContact);
-
-        ContactDTO responseDTO = ContactMapper.toDto(savedContact);
-
-        ApiResponse response = new ApiResponse();
-        response.setStatusCode(200);
-        response.setMessage("Contact updated successfully");
-        response.setData(responseDTO);
-
-        return response;
-    }
-
-    @Override
-    public BaseResponseDTO create(ContactDTO contactDTO) {
+//        Optional<ContactDetails> existing = contactRepository.findByUserId(userId);
+//        if (existing != null) {
+//            throw new UserAlreadyExistException("Contact already exists");
+//        }
 
         ContactDetails saveContact = ContactMapper.toEntity(contactDTO);
+        saveContact.setUser(user);
         contactRepository.save(saveContact);
 
         CompleteProfile completeProfile = new CompleteProfile();
@@ -59,46 +49,65 @@ public class ContactServiceImpl implements ContactService {
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("200");
         response.setMessage("Contact Saved Successfully");
-        response.setID(saveContact.getContactId());  // set userID here
+        response.setID(saveContact.getContactId());
 
         return response;
     }
 
-
     @Override
-    public ContactDetails getContactById(Integer contactID) {
+    public ApiResponse getByUserId(Integer userId) {
 
-        return contactRepository.findById(contactID)
-                .orElseThrow(() -> new ContactNotFoundException(
-                        "Contact Details Not found with id " + contactID
+        ContactDetails existingContact = contactRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions(
+                        "No contact details found for userID: " + userId +
+                                ". Please register first."
                 ));
+
+
+        ApiResponse response = new ApiResponse();
+        response.setStatusCode(200);
+        response.setMessage("Contact updated successfully");
+        response.setData(existingContact);
+
+        return response;
     }
 
-//    @Override
-//    public Page getAll(int pageNumber, int pageSize) {
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-//        return (Page) contactRepository.findAll(pageable);
-//    }
-
-
     @Override
-    public ApiResponse updateByContactID(Integer contactID, ContactDTO contactDTO) {
-        ContactDetails existingContact = contactRepository.findById(contactID)
+    public ApiResponse updateByUserID(Integer userId, ContactDTO contactDTO) {
+
+        ContactDetails existingContact = contactRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundExceptions(
-                        "No contact details found for contact ID: " + contactID +
+                        "No contact details found for userID: " + userId +
                                 ". Please register first."
                 ));
 
         updateContact(existingContact, contactDTO);
-
         ContactDetails savedContact = contactRepository.save(existingContact);
-
         ContactDTO responseDTO = ContactMapper.toDto(savedContact);
 
         ApiResponse response = new ApiResponse();
         response.setStatusCode(200);
         response.setMessage("Contact updated successfully");
         response.setData(responseDTO);
+
+        return response;
+    }
+
+    @Transactional
+    @Override
+    public BaseResponseDTO deleteByUserID(Integer userID) {
+        ContactDetails existingContact = contactRepository.findByUserId(userID)
+                .orElseThrow(() -> new UserNotFoundExceptions(
+                        "No contact details found for userID: " + userID +
+                                ". Please register first."
+                ));
+
+        contactRepository.deleteByUserId(userID);
+
+        BaseResponseDTO response = new BaseResponseDTO();
+        response.setCode("201");
+        response.setMessage("Contact Deleted Successfully");
+
 
         return response;
     }
@@ -119,7 +128,6 @@ public class ContactServiceImpl implements ContactService {
         if (contactDTO.getAlternateNumber() != null) {
             existingContact.setAlternateNumber(contactDTO.getAlternateNumber());
         }
-
 
         return existingContact;
     }

@@ -51,7 +51,7 @@ public class EducationAndProfession {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToOne(mappedBy = "educationAndProfession")
-//    private CompleteProfile CompleteProfile;
+    @OneToOne(mappedBy = "educationAndProfession")
+    private CompleteProfile CompleteProfile;
 
 }

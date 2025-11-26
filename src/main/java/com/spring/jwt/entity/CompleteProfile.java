@@ -26,9 +26,9 @@ public class CompleteProfile {
 //    @JoinColumn(name = "horoscopeDetailsId", nullable = false)
 //    private HoroscopeDetails horoscopeDetails;
 //
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "educationId", nullable = false)
-//    private EducationAndProfession educationAndProfession;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "educationId")
+    private EducationAndProfession educationAndProfession;
 //
 //    @OneToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "familyBackgroundId", nullable = false)

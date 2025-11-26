@@ -137,11 +137,11 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         user = userRepository.save(user);
-//
+
 //        if (role != null) {
 //            switch (role.getName()) {
 //                case "USER":
-//                   createUserProfile(user, userDTO);
+//                  // createUserProfile(user, userDTO);
 //                    break;
 //                case "ADMIN":
 //                    createAdminProfile(user,userDTO);
@@ -150,8 +150,8 @@ public class UserServiceImpl implements UserService {
 //                    break;
 //            }
 //        }
-
-        return user;
+//
+       return user;
     }
 
     private void createAdminProfile(User user, UserDTO userDTO) {
