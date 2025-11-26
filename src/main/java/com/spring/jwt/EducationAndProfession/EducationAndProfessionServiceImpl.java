@@ -1,26 +1,53 @@
 package com.spring.jwt.EducationAndProfession;
 
+import com.spring.jwt.CompleteProfile.CompleteProfileRepository;
 import com.spring.jwt.ContactDetails.ContactDTO;
 import com.spring.jwt.ContactDetails.ContactMapper;
+import com.spring.jwt.entity.CompleteProfile;
 import com.spring.jwt.entity.ContactDetails;
 import com.spring.jwt.entity.EducationAndProfession;
+import com.spring.jwt.entity.User;
 import com.spring.jwt.exception.UserNotFoundExceptions;
+import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.ApiResponse;
 import com.spring.jwt.utils.BaseResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+@RequiredArgsConstructor
 @Service
 public class EducationAndProfessionServiceImpl implements EducationAndProfessionService{
 
     private final EducationAndProfessionRepository educationAndProfessionRepository;
+    private final UserRepository userRepository;
+    private final CompleteProfileRepository completeProfileRepository;
 
-    public EducationAndProfessionServiceImpl(EducationAndProfessionRepository educationAndProfessionRepository) {
-        this.educationAndProfessionRepository = educationAndProfessionRepository;
-    }
 
 
     @Override
-    public ApiResponse save(Integer userID, EducationDTO educationDTO) {
+    public BaseResponseDTO create(Integer userId ,EducationDTO educationDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
+
+        EducationAndProfession save = EducationMapper.toEntity(educationDTO);
+        save.setUser(user);
+        educationAndProfessionRepository.save(save);
+
+        CompleteProfile completeProfile = new CompleteProfile();
+        completeProfile.setEducationAndProfession(save);
+        completeProfileRepository.save(completeProfile);
+
+        BaseResponseDTO response = new BaseResponseDTO();
+        response.setCode("200");
+        response.setMessage("Education Saved Successfully");
+        response.setID(save.getEducationId());
+
+        return response;
+    }
+
+    @Override
+    public ApiResponse updateByUserdID(Integer userID, EducationDTO educationDTO) {
 
         EducationAndProfession existing = educationAndProfessionRepository.findByUserId(userID)
                 .orElseThrow(() -> new UserNotFoundExceptions(
@@ -41,19 +68,7 @@ public class EducationAndProfessionServiceImpl implements EducationAndProfession
         return response;
     }
 
-    @Override
-    public BaseResponseDTO create(EducationDTO educationDTO) {
 
-        EducationAndProfession save = EducationMapper.toEntity(educationDTO);
-        educationAndProfessionRepository.save(save);
-
-        BaseResponseDTO response = new BaseResponseDTO();
-        response.setCode("200");
-        response.setMessage("Education Saved Successfully");
-        response.setID(save.getEducationId());  // set userID here
-
-        return response;
-    }
 
     private void updateEducation(EducationAndProfession existing, EducationDTO educationDTO) {
         if (educationDTO.getEducation() != null) {

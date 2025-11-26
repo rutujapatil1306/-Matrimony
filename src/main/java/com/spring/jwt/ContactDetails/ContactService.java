@@ -8,13 +8,14 @@ import org.hibernate.query.Page;
 import java.util.List;
 
 public interface ContactService {
-    ApiResponse updateByUserID(Integer userID, ContactDTO contactDTO);
-    
-    BaseResponseDTO create(ContactDTO contactDTO);
 
-    ContactDetails getContactById(Integer contactID);
+    BaseResponseDTO create(Integer userId,ContactDTO contactDTO);
 
-    ApiResponse updateByContactID(Integer contactID, ContactDTO contactDTO);
+    ApiResponse getByUserId(Integer userId);
 
-   // Page getAll(int page, int pageSize);
+    ApiResponse updateByUserID(Integer userId, ContactDTO contactDTO);
+
+    BaseResponseDTO deleteByUserID(Integer userID);
+
+
 }

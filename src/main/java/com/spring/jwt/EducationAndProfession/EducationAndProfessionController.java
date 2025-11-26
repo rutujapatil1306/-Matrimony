@@ -25,16 +25,16 @@ public class EducationAndProfessionController {
             @RequestHeader("Authorization") String authHeader,
             @RequestBody EducationDTO educationDTO) {
         Integer userId= jwtUtils.extractUSerID(authHeader);
-        BaseResponseDTO response = educationAndProfessionService.create(educationDTO);
+        BaseResponseDTO response = educationAndProfessionService.create(userId , educationDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<ApiResponse<EducationAndProfession>> create(@RequestParam Integer userID,
+    public ResponseEntity<ApiResponse<EducationAndProfession>> updateByUserdID(@RequestParam Integer userID,
                                                                       @RequestBody EducationDTO educationDTO){
-        ApiResponse response = educationAndProfessionService.save(userID,educationDTO);
+        ApiResponse response = educationAndProfessionService.updateByUserdID(userID,educationDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

@@ -1,6 +1,8 @@
 package com.spring.jwt.utils;
 
 import com.spring.jwt.entity.User;
+import com.spring.jwt.exception.InvalidTokenException;
+import com.spring.jwt.exception.UserNotFoundExceptions;
 import com.spring.jwt.jwt.JwtService;
 import com.spring.jwt.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -15,21 +17,27 @@ public class JwtUtils {
     private final UserRepository userRepository;
 
     public Integer extractUSerID(String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new InvalidTokenException("Authorization header missing or invalid format");
+        }
+
         String token = authHeader.substring(7);
 
-        // 1. Validate token
         if (!jwtService.isValidToken(token)) {
-            throw new RuntimeException("Invalid token");
+            throw new InvalidTokenException("Invalid or expired token");
         }
-        // 2. Extract claims
+
         Claims claims = jwtService.extractClaims(token);
-        // 3. Extract email (subject)
+
         String email = claims.getSubject();
-        // 4. Fetch userId
+
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new UserNotFoundExceptions("User not found");
         }
+
         return user.getId();
     }
+
 }

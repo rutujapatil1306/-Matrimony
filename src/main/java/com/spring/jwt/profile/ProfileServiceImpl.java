@@ -3,6 +3,7 @@ package com.spring.jwt.profile;
 
 import com.spring.jwt.entity.User;
 import com.spring.jwt.entity.UserProfile;
+import com.spring.jwt.exception.UserNotFoundExceptions;
 import com.spring.jwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +23,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileDTO createProfile(Integer userId, ProfileDTO dto) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
         UserProfile existing = profileRepository.findByUserId(userId);
         if (existing != null) {

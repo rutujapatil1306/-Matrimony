@@ -26,56 +26,43 @@ public class ContactController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponseDTO> createContact(
-            @RequestHeader("Authorization") String authHeader,
-            @RequestBody ContactDTO contactDTO) {
+    public ResponseEntity<BaseResponseDTO> createContact(@RequestHeader("Authorization") String authHeader,
+                                                         @RequestBody ContactDTO contactDTO) {
         Integer userId= jwtUtils.extractUSerID(authHeader);
-        BaseResponseDTO response = contactService.create(contactDTO);
-
+        BaseResponseDTO response = contactService.create(userId,contactDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
 
-    @GetMapping("/getById")
-    public ResponseEntity<ApiResponse<ContactDetails>> getContactByID(@RequestParam Integer contactID) {
-        ContactDetails contact = contactService.getContactById(contactID);
+    @GetMapping("/getByUserId")
+    public ResponseEntity<ApiResponse> getByUserId(@RequestParam Integer userId){
 
+        ApiResponse response = contactService.getByUserId(userId);
         return ResponseEntity
                 .status(HttpStatus.FOUND)
-                .body(ApiResponse.success("Contact Details For Id " + contactID, contact));
+                .body(ApiResponse.success("Retrived Data By Using User ID",response));
     }
-
-//    @GetMapping("/getAll")
-//    public ResponseEntity<ApiResponse<Page>> getAllContacts(
-//            @RequestParam(defaultValue = "0") int page) {
-//        int pageSize = 4;  // 4 contacts per page
-//        Page contactDetails = contactService.getAll(page, pageSize);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(ApiResponse.success("List of contacts - Page " + page, contactDetails));
-//    }
-
 
     @PatchMapping("/update")
-    public ResponseEntity<ApiResponse<ContactDetails>> updateByUserID(@RequestParam Integer userID, @RequestBody ContactDTO contactDTO){
-        ApiResponse response = contactService.updateByUserID(userID,contactDTO);
+    public ResponseEntity<ApiResponse<ContactDetails>> updateByUserID(@RequestParam Integer userId, @RequestBody ContactDTO contactDTO){
+        ApiResponse response = contactService.updateByUserID(userId,contactDTO);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResponse.success("Contact Updated Sucessfully ! "));
+                .body(ApiResponse.success("Contact Updated Sucessfully !"));
     }
 
-    @PatchMapping("/updateByContactID")
-    public ResponseEntity<ApiResponse<ContactDetails>> updateByContactID(@RequestParam Integer contactID , @RequestBody ContactDTO contactDTO){
-
-        ApiResponse response = contactService.updateByContactID(contactID,contactDTO);
+    @DeleteMapping("/delete")
+    public ResponseEntity<BaseResponseDTO> deleteByUserID(@RequestParam Integer userID){
+        BaseResponseDTO response = contactService.deleteByUserID(userID);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResponse.success("Contact Updated Sucessfully ! "));
+                .body(response);
     }
+
+
 
 
 
