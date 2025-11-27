@@ -7,7 +7,7 @@ import com.spring.jwt.entity.User;
 
 public interface HoroscopeDetailsService {
 
-    HoroscopeDTO saveHoroscopeDetails(HoroscopeDTO horoscopeDTO);
+    HoroscopeDTO saveHoroscopeDetails(Integer userId ,HoroscopeDTO horoscopeDTO);
 
     HoroscopeDTO getHoroscopeById(Integer id);
 
