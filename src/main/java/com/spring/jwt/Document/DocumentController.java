@@ -2,11 +2,14 @@ package com.spring.jwt.Document;
 
 import com.spring.jwt.utils.BaseResponseDTO;
 import com.spring.jwt.utils.JwtUtils;
+import jakarta.servlet.annotation.MultipartConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/documents")
@@ -18,11 +21,11 @@ public class DocumentController {
 
     @PostMapping("/upload")
     public ResponseEntity<BaseResponseDTO> uploadDocuments( @RequestHeader("Authorization") String authHeader,
-                                                            @RequestParam("documentType") String documentType,
-                                                            @RequestParam("file") MultipartFile file)
+                                                            @RequestParam String documentName,
+                                                            @RequestPart List<MultipartFile> file)
     {
         Integer userId = jwtUtils.extractUSerID(authHeader);
-        BaseResponseDTO response = documentService.uploadDocument(documentType, file);
+        BaseResponseDTO response = documentService.uploadDocument(userId ,documentName, file);
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(response);

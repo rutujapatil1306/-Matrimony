@@ -89,7 +89,7 @@ public class ApiResponse<T> {
      * @param <T> Type of data
      * @return ApiResponse object
      */
-    public static <T> ApiResponse<T> success(String message ) {
+    public static <T> ApiResponse<T> success(String message) {
         return ApiResponse.<T>builder()
                 .success(true)
                 .message(message)
