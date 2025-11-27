@@ -18,7 +18,7 @@ public class HoroscopeDetailsServiceImpl implements HoroscopeDetailsService{
     private final HoroscopeMapper horoscopeMapper;
 
     @Override
-    public HoroscopeDTO saveHoroscopeDetails(HoroscopeDTO horoscopeDTO) {
+    public HoroscopeDTO saveHoroscopeDetails( Integer userId ,HoroscopeDTO horoscopeDTO) {
 
         if(horoscopeDTO==null){
             throw new IllegalArgumentException("Horoscope data cannot be null");

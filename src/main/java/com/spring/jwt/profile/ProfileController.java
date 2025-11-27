@@ -4,7 +4,7 @@ import com.spring.jwt.entity.User;
 import com.spring.jwt.jwt.JwtService;
 import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.ApiResponse;
-import com.spring.jwt.utils.JwtUtils;
+import com.spring.jwt.utils.SecurityUtil;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +25,7 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    private final JwtUtils jwtUtils;
+
 
     @Operation(summary = "Api for profile creation")
     @PostMapping ("/createProfile")
@@ -33,7 +33,7 @@ public class ProfileController {
             @RequestHeader("Authorization") String authHeader,
             @RequestBody @Valid ProfileDTO profileDTO){
         try {
-            Integer userId= jwtUtils.extractUSerID(authHeader);
+            Integer userId= SecurityUtil.getCurrentUserId();
             profileService.createProfile(userId, profileDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("profile created successfully"));
         }catch (Exception e){
