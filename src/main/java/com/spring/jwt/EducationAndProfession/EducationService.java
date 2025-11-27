@@ -3,7 +3,7 @@ package com.spring.jwt.EducationAndProfession;
 import com.spring.jwt.utils.ApiResponse;
 import com.spring.jwt.utils.BaseResponseDTO;
 
-public interface EducationAndProfessionService {
+public interface EducationService {
 
     BaseResponseDTO create(Integer userID ,EducationDTO educationDTO);
 

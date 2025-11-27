@@ -2,7 +2,7 @@ package com.spring.jwt.service.impl;
 
 import com.spring.jwt.ContactDetails.ContactRepository;
 import com.spring.jwt.Document.DocumentRepository;
-import com.spring.jwt.EducationAndProfession.EducationAndProfessionRepository;
+import com.spring.jwt.EducationAndProfession.EducationRepository;
 import com.spring.jwt.FamilyBackground.FamilyBackgroundRepository;
 import com.spring.jwt.HoroscopeDetails.HoroscopeDetailsRepository;
 import com.spring.jwt.PartnerPreference.PartnerPreferenceRepository;
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     private final DocumentRepository documentRepository;
 
-    private final EducationAndProfessionRepository educationAndProfessionRepository;
+    private final EducationRepository educationAndProfessionRepository;
 
     private final FamilyBackgroundRepository familyBackgroundRepository;
 
