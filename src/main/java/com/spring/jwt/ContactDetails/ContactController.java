@@ -1,7 +1,10 @@
 package com.spring.jwt.ContactDetails;
 
 import com.spring.jwt.entity.ContactDetails;
-import com.spring.jwt.utils.*;
+import com.spring.jwt.utils.ApiResponse;
+import com.spring.jwt.utils.BaseResponseDTO;
+import com.spring.jwt.utils.ErrorResponseDto;
+import com.spring.jwt.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,59 +23,46 @@ import java.util.List;
 public class ContactController {
 
     private final ContactService contactService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponseDTO> createContact(
-            @RequestBody ContactDTO contactDTO) {
-
-        Integer userId= SecurityUtil.getCurrentUserId();
-        BaseResponseDTO response = contactService.create(contactDTO);
-
+    public ResponseEntity<BaseResponseDTO> createContact(@RequestHeader("Authorization") String authHeader,
+                                                         @RequestBody ContactDTO contactDTO) {
+        Integer userId= jwtUtils.extractUSerID(authHeader);
+        BaseResponseDTO response = contactService.create(userId,contactDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
 
-    @GetMapping("/getById")
-    public ResponseEntity<ApiResponse<ContactDetails>> getContactByID(@RequestParam Integer contactID) {
+    @GetMapping("/getByUserId")
+    public ResponseEntity<ApiResponse> getByUserId(@RequestParam Integer userId){
 
-        ContactDetails contact = contactService.getContactById(contactID);
-
+        ApiResponse response = contactService.getByUserId(userId);
         return ResponseEntity
                 .status(HttpStatus.FOUND)
-                .body(ApiResponse.success("Contact Details For Id " + contactID, contact));
+                .body(ApiResponse.success("Retrived Data By Using User ID",response));
     }
-
-//    @GetMapping("/getAll")
-//    public ResponseEntity<ApiResponse<Page>> getAllContacts(
-//            @RequestParam(defaultValue = "0") int page) {
-//        int pageSize = 4;  // 4 contacts per page
-//        Page contactDetails = contactService.getAll(page, pageSize);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(ApiResponse.success("List of contacts - Page " + page, contactDetails));
-//    }
-
 
     @PatchMapping("/update")
-    public ResponseEntity<ApiResponse<ContactDetails>> updateByUserID(@RequestParam Integer userID, @RequestBody ContactDTO contactDTO){
-        ApiResponse response = contactService.updateByUserID(userID,contactDTO);
+    public ResponseEntity<ApiResponse<ContactDetails>> updateByUserID(@RequestParam Integer userId, @RequestBody ContactDTO contactDTO){
+        ApiResponse response = contactService.updateByUserID(userId,contactDTO);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResponse.success("Contact Updated Sucessfully ! "));
+                .body(ApiResponse.success("Contact Updated Sucessfully !"));
     }
 
-    @PatchMapping("/updateByContactID")
-    public ResponseEntity<ApiResponse<ContactDetails>> updateByContactID(@RequestParam Integer contactID , @RequestBody ContactDTO contactDTO){
-
-        ApiResponse response = contactService.updateByContactID(contactID,contactDTO);
+    @DeleteMapping("/delete")
+    public ResponseEntity<BaseResponseDTO> deleteByUserID(@RequestParam Integer userID){
+        BaseResponseDTO response = contactService.deleteByUserID(userID);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResponse.success("Contact Updated Sucessfully ! "));
+                .body(response);
     }
+
+
 
 
 

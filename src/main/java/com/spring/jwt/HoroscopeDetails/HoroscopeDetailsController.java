@@ -2,12 +2,8 @@ package com.spring.jwt.HoroscopeDetails;
 
 
 
-import com.spring.jwt.ContactDetails.ContactDTO;
-import com.spring.jwt.entity.ContactDetails;
-import com.spring.jwt.entity.HoroscopeDetails;
 import com.spring.jwt.utils.ApiResponse;
 import com.spring.jwt.utils.BaseResponseDTO;
-import com.spring.jwt.utils.JwtUtils;
 import com.spring.jwt.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
